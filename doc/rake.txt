@@ -1,0 +1,119 @@
+*rake.txt*  A simple dialog for setting makeprg in Neovim
+
+Author:  jpalazz2
+License: MIT
+
+==============================================================================
+CONTENTS                                                        *rake-contents*
+
+    1. Introduction .......................... |rake-introduction|
+    2. Installation .......................... |rake-installation|
+    3. Commands .............................. |rake-commands|
+    4. Lua API ............................... |rake-api|
+    5. Usage ................................. |rake-usage|
+
+==============================================================================
+1. INTRODUCTION                                             *rake-introduction*
+
+rake.nvim provides a floating dialog for setting the |'makeprg'| option in
+Neovim. This is useful when you want to quickly change your build command
+without leaving your editing context.
+
+Features:
+- Floating dialog with rounded border
+- Pre-fills with current makeprg value
+- Supports both global and buffer-local makeprg
+- Simple keyboard controls (Enter to confirm, Escape to cancel)
+
+==============================================================================
+2. INSTALLATION                                             *rake-installation*
+
+Using lazy.nvim: >lua
+    {
+        "jpalazz2/rake.nvim",
+        config = function()
+            require("rake").setup()
+        end,
+    }
+<
+Using packer.nvim: >lua
+    use {
+        "jpalazz2/rake.nvim",
+        config = function()
+            require("rake").setup()
+        end,
+    }
+<
+==============================================================================
+3. COMMANDS                                                     *rake-commands*
+
+                                                                        *:Rake*
+:Rake                   Open a floating dialog to set the global |'makeprg'|
+                        option. The dialog is pre-filled with the current
+                        value of makeprg.
+
+                                                                  *:Rake-local*
+:Rake local             Open a floating dialog to set the buffer-local
+                        |'makeprg'| option. This only affects the current
+                        buffer.
+
+Dialog keybindings:
+    <CR>                Confirm the new makeprg value and close the dialog
+    <Esc>               Cancel and close the dialog without changes
+
+==============================================================================
+4. LUA API                                                          *rake-api*
+
+                                                                 *rake.setup()*
+rake.setup({opts})
+    Initialize the plugin. Currently accepts no options but is provided for
+    future extensibility.
+
+    Parameters: ~
+        {opts}  (table|nil)  Optional configuration table (reserved for
+                             future use)
+
+    Example: >lua
+        require("rake").setup()
+<
+                                                     *rake.open_makeprg_dialog()*
+rake.open_makeprg_dialog({opts})
+    Open the makeprg dialog programmatically.
+
+    Parameters: ~
+        {opts}  (table|nil)  Optional configuration table
+            - use_local  (boolean)  If true, set buffer-local makeprg.
+                                    Default: false
+
+    Example: >lua
+        -- Open dialog for global makeprg
+        require("rake").open_makeprg_dialog()
+
+        -- Open dialog for buffer-local makeprg
+        require("rake").open_makeprg_dialog({ use_local = true })
+<
+==============================================================================
+5. USAGE                                                           *rake-usage*
+
+Setting a global makeprg: ~
+
+1. Run `:Rake`
+2. Edit the makeprg value in the dialog
+3. Press <Enter> to confirm or <Escape> to cancel
+
+Setting a buffer-local makeprg: ~
+
+1. Run `:Rake local`
+2. Edit the makeprg value in the dialog
+3. Press <Enter> to confirm or <Escape> to cancel
+
+Suggested keymaps: >lua
+    vim.keymap.set("n", "<leader>mr", "<cmd>Rake<cr>",
+        { desc = "Set makeprg" })
+    vim.keymap.set("n", "<leader>ml", "<cmd>Rake local<cr>",
+        { desc = "Set makeprg (local)" })
+<
+After setting makeprg, use |:make| to run your build command.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
